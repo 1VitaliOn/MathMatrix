@@ -40,3 +40,61 @@ cd MathMatrix
 
 # Запусти через Maven
 mvn javafx:run
+```
+
+### Запуск тестов
+```bash
+mvn test
+```
+
+## Структура проекта
+
+```
+src/main/java/math/engine/
+├── Vector2D.java      # Реализация 2D вектора
+├── Vector3D.java      # Реализация 3D вектора
+├── Vector4D.java      # Реализация 4D вектора
+├── Matrix3x3.java     # Реализация матрицы 3x3
+├── Matrix4x4.java     # Реализация матрицы 4x4
+├── LinearAlgebraEngine.java # Вспомогательный класс
+└── MathDemoApp.java   # JavaFX приложение
+```
+
+## Примеры использования
+
+### Операции с векторами
+```java
+Vector3D v1 = new Vector3D(1, 2, 3);
+Vector3D v2 = new Vector3D(4, 5, 6);
+
+Vector3D sum = v1.Add(v2);
+Vector3D cross = v1.ComputeCrossProduct(v2);
+float dot = v1.ComputeDotProduct(v2);
+```
+
+### Операции с матрицами
+```java
+Matrix3x3 matrix = new Matrix3x3(new float[][]{
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+});
+
+float det = matrix.ComputeDeterminant();
+Matrix3x3 inverse = matrix.ComputeInverse();
+```
+
+### Решение систем уравнений
+```java
+Matrix3x3 A = new Matrix3x3(...);
+Vector3D b = new Vector3D(...);
+Vector3D solution = A.SolveLinearSystem(b);
+```
+
+## Тестирование
+
+Комплексные модульные тесты покрывают:
+- Базовые операции с векторами и матрицами
+- Крайние случаи и обработку ошибок
+- Решение систем линейных уравнений
+- Матрицы преобразований
