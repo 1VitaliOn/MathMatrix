@@ -1,15 +1,17 @@
 package math.engine;
 
-public final class Matrix3x3 {
+public final class Matrix3x3 extends AbstractMatrix<Matrix3x3, Vector3D> {
 
-    private final float[][] Elements;
-
-    public Matrix3x3(float[][] elements) {
-        ValidateMatrixDimensions(elements, 3, 3);
-        this.Elements = DeepCopyArray(elements);
+    public Matrix3x3(float[][] data) {
+        super(data, 3, 3);
     }
 
-    public static Matrix3x3 CreateIdentity() {
+    @Override
+    protected Matrix3x3 createNew(float[][] data) {
+        return new Matrix3x3(data);
+    }
+
+    public static Matrix3x3 identity() {
         return new Matrix3x3(new float[][]{
                 {1, 0, 0},
                 {0, 1, 0},
@@ -17,172 +19,98 @@ public final class Matrix3x3 {
         });
     }
 
-    public static Matrix3x3 CreateZero() {
-        return new Matrix3x3(new float[][]{
-                {0, 0, 0},
-                {0, 0, 0},
-                {0, 0, 0}
-        });
+    public static Matrix3x3 zero() {
+        return new Matrix3x3(new float[3][3]);
     }
 
-    public Matrix3x3 Add(Matrix3x3 other) {
-        float[][] result = new float[3][3];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                result[i][j] = this.Elements[i][j] + other.Elements[i][j];
-            }
-        }
-        return new Matrix3x3(result);
-    }
-
-    public Matrix3x3 Subtract(Matrix3x3 other) {
-        float[][] result = new float[3][3];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                result[i][j] = this.Elements[i][j] - other.Elements[i][j];
-            }
-        }
-        return new Matrix3x3(result);
-    }
-
-    public Matrix3x3 Multiply(Matrix3x3 other) {
-        float[][] result = new float[3][3];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                float sum = 0;
-                for (int k = 0; k < 3; k++) {
-                    sum += this.Elements[i][k] * other.Elements[k][j];
-                }
-                result[i][j] = sum;
-            }
-        }
-        return new Matrix3x3(result);
-    }
-
-    public Vector3D Multiply(Vector3D vector) {
-        float x = Elements[0][0] * vector.GetX() +
-                Elements[0][1] * vector.GetY() +
-                Elements[0][2] * vector.GetZ();
-
-        float y = Elements[1][0] * vector.GetX() +
-                Elements[1][1] * vector.GetY() +
-                Elements[1][2] * vector.GetZ();
-
-        float z = Elements[2][0] * vector.GetX() +
-                Elements[2][1] * vector.GetY() +
-                Elements[2][2] * vector.GetZ();
-
+    @Override
+    public Vector3D multiply(Vector3D vector) {
+        float x = data[0][0] * vector.getX() + data[0][1] * vector.getY() + data[0][2] * vector.getZ();
+        float y = data[1][0] * vector.getX() + data[1][1] * vector.getY() + data[1][2] * vector.getZ();
+        float z = data[2][0] * vector.getX() + data[2][1] * vector.getY() + data[2][2] * vector.getZ();
         return new Vector3D(x, y, z);
     }
 
-    public Matrix3x3 Transpose() {
-        float[][] result = new float[3][3];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                result[i][j] = this.Elements[j][i];
-            }
-        }
-        return new Matrix3x3(result);
-    }
+    @Override
+    public float determinant() {
+        float a = data[0][0], b = data[0][1], c = data[0][2];
+        float d = data[1][0], e = data[1][1], f = data[1][2];
+        float g = data[2][0], h = data[2][1], i = data[2][2];
 
-    public float ComputeDeterminant() {
-        float a = Elements[0][0], b = Elements[0][1], c = Elements[0][2];
-        float d = Elements[1][0], e = Elements[1][1], f = Elements[1][2];
-        float g = Elements[2][0], h = Elements[2][1], i = Elements[2][2];
-
-        return a * (e * i - f * h) -
-                b * (d * i - f * g) +
-                c * (d * h - e * g);
-    }
-
-    public Matrix3x3 ComputeInverse() {
-        float det = ComputeDeterminant();
-        if (Math.abs(det) < 1e-12f) {
-            throw new ArithmeticException("Матрица вырождена, обратной не существует");
-        }
-
-        float[][] result = new float[3][3];
-
-        float a = Elements[0][0], b = Elements[0][1], c = Elements[0][2];
-        float d = Elements[1][0], e = Elements[1][1], f = Elements[1][2];
-        float g = Elements[2][0], h = Elements[2][1], i = Elements[2][2];
-
-        result[0][0] = (e * i - f * h) / det;
-        result[0][1] = (c * h - b * i) / det;
-        result[0][2] = (b * f - c * e) / det;
-
-        result[1][0] = (f * g - d * i) / det;
-        result[1][1] = (a * i - c * g) / det;
-        result[1][2] = (c * d - a * f) / det;
-
-        result[2][0] = (d * h - e * g) / det;
-        result[2][1] = (b * g - a * h) / det;
-        result[2][2] = (a * e - b * d) / det;
-
-        return new Matrix3x3(result);
-    }
-
-    public Vector3D SolveLinearSystem(Vector3D vector) {
-        Matrix3x3 inverse = ComputeInverse();
-        return inverse.Multiply(vector);
-    }
-
-    public float GetElement(int row, int col) {
-        ValidateIndices(row, col);
-        return Elements[row][col];
-    }
-
-    private void ValidateMatrixDimensions(float[][] matrix, int rows, int cols) {
-        if (matrix == null || matrix.length != rows) {
-            throw new IllegalArgumentException("Неверная размерность матрицы");
-        }
-        for (float[] row : matrix) {
-            if (row == null || row.length != cols) {
-                throw new IllegalArgumentException("Неверная размерность матрицы");
-            }
-        }
-    }
-
-    private void ValidateIndices(int row, int col) {
-        if (row < 0 || row >= 3 || col < 0 || col >= 3) {
-            throw new IllegalArgumentException("Индексы выходят за границы матрицы");
-        }
-    }
-
-    private float[][] DeepCopyArray(float[][] original) {
-        float[][] copy = new float[original.length][];
-        for (int i = 0; i < original.length; i++) {
-            copy[i] = original[i].clone();
-        }
-        return copy;
+        return a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Matrix3x3 other = (Matrix3x3) obj;
+    public Matrix3x3 inverse() {
+        float det = determinant();
+        if (Math.abs(det) < 1e-12f) {
+            throw new ArithmeticException("Matrix is singular, cannot invert");
+        }
+
+        float a = data[0][0], b = data[0][1], c = data[0][2];
+        float d = data[1][0], e = data[1][1], f = data[1][2];
+        float g = data[2][0], h = data[2][1], i = data[2][2];
+
+        float invDet = 1.0f / det;
+        float[][] result = {
+                {(e * i - f * h) * invDet, (c * h - b * i) * invDet, (b * f - c * e) * invDet},
+                {(f * g - d * i) * invDet, (a * i - c * g) * invDet, (c * d - a * f) * invDet},
+                {(d * h - e * g) * invDet, (b * g - a * h) * invDet, (a * e - b * d) * invDet}
+        };
+
+        return new Matrix3x3(result);
+    }
+
+    @Override
+    public Vector3D solveLinearSystem(Vector3D vector) {
+        return solveGauss(vector);
+    }
+
+    private Vector3D solveGauss(Vector3D b) {
+        float[][] augmented = new float[3][4];
+
         for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (Math.abs(Elements[i][j] - other.Elements[i][j]) >= 1e-6f) {
-                    return false;
+            System.arraycopy(data[i], 0, augmented[i], 0, 3);
+            switch(i) {
+                case 0: augmented[i][3] = b.getX(); break;
+                case 1: augmented[i][3] = b.getY(); break;
+                case 2: augmented[i][3] = b.getZ(); break;
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
+            int maxRow = i;
+            for (int k = i + 1; k < 3; k++) {
+                if (Math.abs(augmented[k][i]) > Math.abs(augmented[maxRow][i])) {
+                    maxRow = k;
+                }
+            }
+
+            float[] temp = augmented[i];
+            augmented[i] = augmented[maxRow];
+            augmented[maxRow] = temp;
+
+            if (Math.abs(augmented[i][i]) < 1e-12f) {
+                throw new ArithmeticException("Matrix is singular, cannot solve system");
+            }
+
+            for (int k = i + 1; k < 3; k++) {
+                float factor = augmented[k][i] / augmented[i][i];
+                for (int j = i; j < 4; j++) {
+                    augmented[k][j] -= factor * augmented[i][j];
                 }
             }
         }
-        return true;
-    }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Matrix3x3:\n");
-        for (int i = 0; i < 3; i++) {
-            sb.append("[ ");
-            for (int j = 0; j < 3; j++) {
-                sb.append(String.format("%8.3f ", Elements[i][j]));
+        float[] solution = new float[3];
+        for (int i = 2; i >= 0; i--) {
+            solution[i] = augmented[i][3];
+            for (int j = i + 1; j < 3; j++) {
+                solution[i] -= augmented[i][j] * solution[j];
             }
-            sb.append("]\n");
+            solution[i] /= augmented[i][i];
         }
-        return sb.toString();
+
+        return new Vector3D(solution[0], solution[1], solution[2]);
     }
 }

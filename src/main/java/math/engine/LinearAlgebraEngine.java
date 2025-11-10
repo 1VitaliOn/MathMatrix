@@ -1,80 +1,47 @@
 package math.engine;
 
-/**
- * 🎯 Фасад для линейной алгебры - единая точка доступа ко всем операциям
- * 📊 Объединяет векторы и матрицы в согласованный API
- */
+
 public final class LinearAlgebraEngine {
 
-    private LinearAlgebraEngine() {
-        // Утилитный класс - запрет создания экземпляров
-    }
+    private LinearAlgebraEngine() {}
 
-    // ==================== ВЕКТОРНЫЕ ОПЕРАЦИИ ====================
-
-    public static Vector2D CreateVector2D(float x, float y) {
+    public static Vector2D createVector2D(float x, float y) {
         return new Vector2D(x, y);
     }
 
-    public static Vector3D CreateVector3D(float x, float y, float z) {
+    public static Vector3D createVector3D(float x, float y, float z) {
         return new Vector3D(x, y, z);
     }
 
-    public static Vector4D CreateVector4D(float x, float y, float z, float w) {
+    public static Vector4D createVector4D(float x, float y, float z, float w) {
         return new Vector4D(x, y, z, w);
     }
 
-    public static Vector4D CreateVector4DFrom3D(Vector3D vector, float w) {
+    public static Vector4D createVector4DFrom3D(Vector3D vector, float w) {
         return new Vector4D(vector, w);
     }
 
-    // ==================== МАТРИЧНЫЕ ОПЕРАЦИИ ====================
-
-    public static Matrix3x3 CreateIdentityMatrix3x3() {
-        return Matrix3x3.CreateIdentity();
+    public static Matrix3x3 createIdentityMatrix3x3() {
+        return Matrix3x3.identity();
     }
 
-    public static Matrix3x3 CreateZeroMatrix3x3() {
-        return Matrix3x3.CreateZero();
+    public static Matrix3x3 createZeroMatrix3x3() {
+        return Matrix3x3.zero();
     }
 
-    public static Matrix4x4 CreateIdentityMatrix4x4() {
-        return Matrix4x4.CreateIdentity();
+    public static Matrix4x4 createIdentityMatrix4x4() {
+        return Matrix4x4.identity();
     }
 
-    public static Matrix4x4 CreateZeroMatrix4x4() {
-        return Matrix4x4.CreateZero();
+    public static Matrix4x4 createZeroMatrix4x4() {
+        return Matrix4x4.zero();
     }
 
-    public static Matrix4x4 CreateTranslationMatrix(float x, float y, float z) {
-        return Matrix4x4.CreateTranslation(x, y, z);
+    public static Matrix4x4 createTranslationMatrix(float x, float y, float z) {
+        return Matrix4x4.translation(x, y, z);
     }
 
-    // ==================== ПРОВЕРКИ И УТИЛИТЫ ====================
-
-    public static boolean AreVectorsEqual(Vector3D v1, Vector3D v2) {
-        return v1.equals(v2);
-    }
-
-    public static boolean AreMatricesEqual(Matrix3x3 m1, Matrix3x3 m2) {
-        return m1.equals(m2);
-    }
-
-    public static float ComputeAngleBetweenVectors(Vector3D v1, Vector3D v2) {
-        float dotProduct = v1.ComputeDotProduct(v2);
-        float lengths = v1.ComputeLength() * v2.ComputeLength();
-
-        if (Math.abs(lengths) < 1e-12f) {
-            throw new ArithmeticException("Невозможно вычислить угол для нулевых векторов");
-        }
-
-        float cosAngle = dotProduct / lengths;
-        cosAngle = Math.max(-1.0f, Math.min(1.0f, cosAngle)); // Ограничение для арккосинуса
-
-        return (float) Math.acos(cosAngle);
-    }
-
-    public static Matrix4x4 CreateRotationMatrixX(float angle) {
+    public static Matrix4x4 createRotationMatrixX(float angle) {
         float cos = (float) Math.cos(angle);
         float sin = (float) Math.sin(angle);
 
@@ -86,7 +53,7 @@ public final class LinearAlgebraEngine {
         });
     }
 
-    public static Matrix4x4 CreateRotationMatrixY(float angle) {
+    public static Matrix4x4 createRotationMatrixY(float angle) {
         float cos = (float) Math.cos(angle);
         float sin = (float) Math.sin(angle);
 
@@ -98,7 +65,7 @@ public final class LinearAlgebraEngine {
         });
     }
 
-    public static Matrix4x4 CreateRotationMatrixZ(float angle) {
+    public static Matrix4x4 createRotationMatrixZ(float angle) {
         float cos = (float) Math.cos(angle);
         float sin = (float) Math.sin(angle);
 
@@ -110,12 +77,26 @@ public final class LinearAlgebraEngine {
         });
     }
 
-    public static Matrix4x4 CreateScaleMatrix(float scaleX, float scaleY, float scaleZ) {
+    public static Matrix4x4 createScaleMatrix(float scaleX, float scaleY, float scaleZ) {
         return new Matrix4x4(new float[][]{
                 {scaleX, 0, 0, 0},
                 {0, scaleY, 0, 0},
                 {0, 0, scaleZ, 0},
                 {0, 0, 0, 1}
         });
+    }
+
+    public static float computeAngleBetweenVectors(Vector3D v1, Vector3D v2) {
+        float dotProduct = v1.dot(v2);
+        float lengths = v1.length() * v2.length();
+
+        if (Math.abs(lengths) < 1e-12f) {
+            throw new ArithmeticException("Cannot compute angle for zero vectors");
+        }
+
+        float cosAngle = dotProduct / lengths;
+        cosAngle = Math.max(-1.0f, Math.min(1.0f, cosAngle));
+
+        return (float) Math.acos(cosAngle);
     }
 }

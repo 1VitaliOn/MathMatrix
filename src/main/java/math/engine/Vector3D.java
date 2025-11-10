@@ -1,107 +1,37 @@
 package math.engine;
 
-public final class Vector3D {
-
-    private final float XComponent;
-    private final float YComponent;
-    private final float ZComponent;
+public final class Vector3D extends AbstractVector<Vector3D> {
 
     public Vector3D(float x, float y, float z) {
-        this.XComponent = x;
-        this.YComponent = y;
-        this.ZComponent = z;
-    }
-
-    public Vector3D Add(Vector3D other) {
-        return new Vector3D(
-                this.XComponent + other.XComponent,
-                this.YComponent + other.YComponent,
-                this.ZComponent + other.ZComponent
-        );
-    }
-
-    public Vector3D Subtract(Vector3D other) {
-        return new Vector3D(
-                this.XComponent - other.XComponent,
-                this.YComponent - other.YComponent,
-                this.ZComponent - other.ZComponent
-        );
-    }
-
-    public Vector3D Multiply(float scalar) {
-        return new Vector3D(
-                this.XComponent * scalar,
-                this.YComponent * scalar,
-                this.ZComponent * scalar
-        );
-    }
-
-    public Vector3D Divide(float scalar) {
-        if (Math.abs(scalar) < 1e-12f) {
-            throw new ArithmeticException("Деление на ноль невозможно");
-        }
-        return new Vector3D(
-                this.XComponent / scalar,
-                this.YComponent / scalar,
-                this.ZComponent / scalar
-        );
-    }
-
-    public float ComputeLength() {
-        return (float) Math.sqrt(
-                XComponent * XComponent +
-                        YComponent * YComponent +
-                        ZComponent * ZComponent
-        );
-    }
-
-    public Vector3D Normalize() {
-        float length = ComputeLength();
-        if (length < 1e-12f) {
-            throw new ArithmeticException("Невозможно нормализовать нулевой вектор");
-        }
-        return Divide(length);
-    }
-
-    public float ComputeDotProduct(Vector3D other) {
-        return this.XComponent * other.XComponent +
-                this.YComponent * other.YComponent +
-                this.ZComponent * other.ZComponent;
-    }
-
-    public Vector3D ComputeCrossProduct(Vector3D other) {
-        return new Vector3D(
-                this.YComponent * other.ZComponent - this.ZComponent * other.YComponent,
-                this.ZComponent * other.XComponent - this.XComponent * other.ZComponent,
-                this.XComponent * other.YComponent - this.YComponent * other.XComponent
-        );
-    }
-
-    public float GetX() {
-        return XComponent;
-    }
-
-    public float GetY() {
-        return YComponent;
-    }
-
-    public float GetZ() {
-        return ZComponent;
+        super(new float[]{x, y, z});
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Vector3D other = (Vector3D) obj;
-        return Math.abs(XComponent - other.XComponent) < 1e-6f &&
-                Math.abs(YComponent - other.YComponent) < 1e-6f &&
-                Math.abs(ZComponent - other.ZComponent) < 1e-6f;
+    protected Vector3D createNew(float[] components) {
+        return new Vector3D(components[0], components[1], components[2]);
+    }
+
+    public float getX() { return components[0]; }
+    public float getY() { return components[1]; }
+    public float getZ() { return components[2]; }
+
+    public Vector3D cross(Vector3D other) {
+        return new Vector3D(
+                getY() * other.getZ() - getZ() * other.getY(),
+                getZ() * other.getX() - getX() * other.getZ(),
+                getX() * other.getY() - getY() * other.getX()
+        );
+    }
+
+    public float distance(Vector3D other) {
+        float dx = getX() - other.getX();
+        float dy = getY() - other.getY();
+        float dz = getZ() - other.getZ();
+        return (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
     @Override
     public String toString() {
-        return String.format("Vector3D(%.2f, %.2f, %.2f)",
-                XComponent, YComponent, ZComponent);
+        return String.format("Vector3D(%.3f, %.3f, %.3f)", getX(), getY(), getZ());
     }
 }
