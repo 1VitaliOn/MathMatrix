@@ -1,4 +1,6 @@
-package math.engine;
+package math.engine.matrix;
+
+import math.engine.vector.Vector3D;
 
 public class CustomMatrix extends AbstractMatrix<CustomMatrix, Vector3D> {
 

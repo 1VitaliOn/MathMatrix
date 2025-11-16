@@ -1,4 +1,4 @@
-package math.engine;
+package math.engine.vector;
 
 public final class Vector4D extends AbstractVector<Vector4D> {
 

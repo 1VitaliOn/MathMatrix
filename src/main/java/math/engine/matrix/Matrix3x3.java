@@ -1,4 +1,6 @@
-package math.engine;
+package math.engine.matrix;
+
+import math.engine.vector.Vector3D;
 
 public final class Matrix3x3 extends AbstractMatrix<Matrix3x3, Vector3D> {
 

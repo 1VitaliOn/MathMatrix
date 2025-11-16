@@ -1,4 +1,6 @@
-package math.engine;
+package math.engine.matrix;
+
+import math.engine.vector.AbstractVector;
 
 public abstract class AbstractMatrix<T extends AbstractMatrix<T, V>, V extends AbstractVector<V>>
         implements Matrix<T, V> {

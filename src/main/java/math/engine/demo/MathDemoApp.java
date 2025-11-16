@@ -1,4 +1,4 @@
-package math.engine;
+package math.engine.demo;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -11,6 +11,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import math.engine.*;
+import math.engine.matrix.*;
+import math.engine.vector.Vector2D;
+import math.engine.vector.Vector3D;
+import math.engine.vector.Vector4D;
 
 public class MathDemoApp extends Application {
 

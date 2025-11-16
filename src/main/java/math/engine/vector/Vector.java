@@ -1,4 +1,4 @@
-package math.engine;
+package math.engine.vector;
 
 public interface Vector<T extends Vector<T>> {
 

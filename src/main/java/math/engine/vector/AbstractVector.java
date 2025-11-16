@@ -1,4 +1,4 @@
-package math.engine;
+package math.engine.vector;
 
 public abstract class AbstractVector<T extends AbstractVector<T>> implements Vector<T> {
 

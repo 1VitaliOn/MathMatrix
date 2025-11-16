@@ -1,6 +1,12 @@
 package math.engine;
 
 
+import math.engine.matrix.Matrix3x3;
+import math.engine.matrix.Matrix4x4;
+import math.engine.vector.Vector2D;
+import math.engine.vector.Vector3D;
+import math.engine.vector.Vector4D;
+
 public final class LinearAlgebraEngine {
 
     private LinearAlgebraEngine() {}

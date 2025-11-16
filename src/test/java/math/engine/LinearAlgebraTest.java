@@ -1,5 +1,7 @@
 package math.engine;
 
+import math.engine.matrix.*;
+import math.engine.vector.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

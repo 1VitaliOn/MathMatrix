@@ -1,4 +1,6 @@
-package math.engine;
+package math.engine.matrix;
+
+import math.engine.vector.Vector;
 
 public interface Matrix<T extends Matrix<T, V>, V extends Vector<V>> {
 
